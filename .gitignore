@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+client/dist/
+
+# Separate project in this folder — not part of FlexiPay
+propflow/
+
+# Env / local
+.env
+.env.*
+!.env.example
+.vscode/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

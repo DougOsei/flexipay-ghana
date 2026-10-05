@@ -1,0 +1,14 @@
+# Render Blueprint for the FlexiPay Ghana Express API.
+# Render → New → Blueprint → select this repo.
+# Note: the free tier has an ephemeral disk, so server/data.json resets on redeploy/restart (fine for a demo).
+services:
+  - type: web
+    name: flexipay-ghana-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
