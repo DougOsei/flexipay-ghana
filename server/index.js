@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const db = require('./db');
 
 const productsRouter = require('./routes/products');
 const vendorsRouter = require('./routes/vendors');
@@ -32,7 +33,8 @@ app.get('/api/health', (req, res) => {
     status: 'online',
     app: 'FlexiPay Ghana Multi-Vendor Hire Purchase API',
     currency: 'GHS (GH₵)',
-    country: 'Ghana 🇬🇭',
+    country: 'Ghana',
+    database: db.getDatabaseHealth(),
     time: new Date().toISOString()
   });
 });

@@ -7,6 +7,11 @@ client/dist/
 # Separate project in this folder — not part of FlexiPay
 propflow/
 
+# Database transient & local SQLite files (auto-created & seeded on boot)
+server/*.db
+server/*.db-wal
+server/*.db-shm
+
 # Env / local
 .env
 .env.*

@@ -11,7 +11,8 @@ import {
   Users, 
   AlertCircle,
   CheckCircle2,
-  DollarSign
+  DollarSign,
+  Database
 } from 'lucide-react';
 
 export default function AdminPortal({ onViewReceipt, activeSection = 'all' }) {
@@ -147,6 +148,43 @@ export default function AdminPortal({ onViewReceipt, activeSection = 'all' }) {
           </div>
         </div>
       </section>
+
+      {/* Live Relational Database Status Bar */}
+      {metrics?.database && (
+        <section className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0">
+              <Database className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-extrabold text-slate-900">
+                  {metrics.database.engine}
+                </h3>
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  Connected
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-mono">
+                File: {metrics.database.file} ({metrics.database.sizeKB} KB)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(metrics.database.tables || {}).map(([tableName, count]) => (
+              <div
+                key={tableName}
+                className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs flex items-center gap-1.5"
+              >
+                <span className="font-mono text-[11px] text-slate-500 capitalize">{tableName}:</span>
+                <span className="font-black text-slate-900">{count}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Vendor Store Directory Table */}
       {(activeSection === 'all' || activeSection === 'vendors') && (

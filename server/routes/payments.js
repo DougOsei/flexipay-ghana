@@ -54,7 +54,7 @@ router.get('/', (req, res) => {
 // GET single payment record
 router.get('/:id', (req, res) => {
   try {
-    const payment = db.data.payments.find(p => p.id === req.params.id || p.networkRef === req.params.id);
+    const payment = db.getPaymentById(req.params.id);
     if (!payment) {
       return res.status(404).json({ success: false, error: 'Payment record not found' });
     }

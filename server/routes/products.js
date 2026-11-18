@@ -6,8 +6,8 @@ const { calculateHPPlan } = require('../utils/hpCalculator');
 // GET all products with optional filters
 router.get('/', (req, res) => {
   try {
-    const { category, search, vendorId, sort, minPrice, maxPrice } = req.query;
-    const products = db.getProducts({ category, search, vendorId, sort, minPrice, maxPrice });
+    const { category, search, vendorId, sort, minPrice, maxPrice, featured } = req.query;
+    const products = db.getProducts({ category, search, vendorId, sort, minPrice, maxPrice, featured });
     res.json({ success: true, count: products.length, products });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

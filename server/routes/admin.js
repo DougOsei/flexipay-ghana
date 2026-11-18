@@ -9,13 +9,15 @@ router.get('/metrics', (req, res) => {
     const vendors = db.getVendors();
     const recentContracts = db.getContracts().slice(0, 10);
     const recentPayments = db.getPayments().slice(0, 10);
+    const database = db.getDatabaseHealth();
 
     res.json({
       success: true,
       stats,
       vendors,
       recentContracts,
-      recentPayments
+      recentPayments,
+      database
     });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

@@ -111,7 +111,7 @@ router.post('/', (req, res) => {
 
     // Record down payment in payments ledger
     const downPaymentRef = downPaymentNetworkRef || `MOMO-GH-${Math.floor(100000 + Math.random() * 900000)}`;
-    db.data.payments.unshift({
+    db.addPayment({
       id: `pay_${Date.now()}`,
       contractId: newContract.id,
       contractNumber: newContract.contractNumber,
@@ -123,10 +123,8 @@ router.post('/', (req, res) => {
       method: paymentMethod || 'MTN_MOMO',
       phone: customerPhone,
       networkRef: downPaymentRef,
-      status: 'SUCCESSFUL',
-      createdAt: new Date().toISOString()
+      status: 'SUCCESSFUL'
     });
-    db.save();
 
     res.status(201).json({
       success: true,

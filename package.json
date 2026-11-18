@@ -9,10 +9,18 @@
     "build:client": "npm --prefix client run build",
     "start": "node server/index.js"
   },
-  "keywords": ["hire-purchase", "bnpl", "ghana", "momo", "ecommerce", "multi-vendor"],
+  "keywords": [
+    "hire-purchase",
+    "bnpl",
+    "ghana",
+    "momo",
+    "ecommerce",
+    "multi-vendor"
+  ],
   "author": "FlexiPay Ghana",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^13.2.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "morgan": "^1.10.0"
