@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import RoleSwitcher from './components/RoleSwitcher';
 import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
 import Marketplace from './pages/Marketplace';
 import ProductDetails from './pages/ProductDetails';
 import CustomerPortal from './pages/CustomerPortal';
@@ -57,8 +58,9 @@ function UnauthorizedNotice({ requiredRole, onSwitch, onGoMarketplace }) {
 function MainAppContent() {
   const { role, toastMessage, switchRole } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('marketplace');
+  const [activeTab, setActiveTab] = useState('home');
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [marketplaceCategory, setMarketplaceCategory] = useState('All');
 
   // Tab guard: sync activeTab whenever role changes
   useEffect(() => {
@@ -76,6 +78,12 @@ function MainAppContent() {
   const [applicationModalData, setApplicationModalData] = useState(null);
   const [paymentModalData, setPaymentModalData] = useState(null);
   const [receiptModalContract, setReceiptModalContract] = useState(null);
+
+  const handleExploreMarketplace = (category = 'All') => {
+    setMarketplaceCategory(category);
+    setActiveTab('marketplace');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSelectProduct = (product) => {
     setSelectedProductId(product.id);
@@ -114,8 +122,19 @@ function MainAppContent() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
+            {activeTab === 'home' && (
+              <HomePage
+                onExploreMarketplace={handleExploreMarketplace}
+                onSelectProduct={handleSelectProduct}
+                onApplyHP={handleApplyHP}
+                onGoHowItWorks={() => { setActiveTab('how-it-works'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onBecomeVendor={() => { switchRole('vendor', 'franko@frankotrading.com'); setActiveTab('vendor'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              />
+            )}
+
             {activeTab === 'marketplace' && (
               <Marketplace
+                initialCategory={marketplaceCategory}
                 onSelectProduct={handleSelectProduct}
                 onApplyHP={handleApplyHP}
               />
@@ -259,22 +278,66 @@ function MainAppContent() {
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Popular Hubs</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Explore Website</h4>
               <ul className="space-y-2 text-xs text-red-200/80">
-                <li>Phones &amp; Tablets (Circle, Accra)</li>
-                <li>Home Appliances (Spintex Road)</li>
-                <li>Computing &amp; Solar (Adum, Kumasi)</li>
-                <li>Cargo Motorbikes &amp; Tricycles (Abossey Okai)</li>
+                <li>
+                  <button 
+                    onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="hover:text-white transition cursor-pointer text-left"
+                  >
+                    Home Overview
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleExploreMarketplace('All')}
+                    className="hover:text-white transition cursor-pointer text-left"
+                  >
+                    All Marketplace Goods
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => { setActiveTab('how-it-works'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="hover:text-white transition cursor-pointer text-left"
+                  >
+                    How Hire Purchase Works
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => { switchRole('vendor', 'franko@frankotrading.com'); setActiveTab('vendor'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className="hover:text-white transition cursor-pointer text-left"
+                  >
+                    For Retailers &amp; Merchants
+                  </button>
+                </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Compliance &amp; Laws</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Popular Categories</h4>
               <ul className="space-y-2 text-xs text-red-200/80">
-                <li>Hire Purchase Act of Ghana (1974)</li>
-                <li>Ghana Card / NIA Verification</li>
-                <li>Data Protection Act 2012</li>
-                <li>GRA e-VAT Tax Compliance</li>
+                <li>
+                  <button onClick={() => handleExploreMarketplace('Phones & Tablets')} className="hover:text-white transition cursor-pointer text-left">
+                    Phones &amp; Tablets (Circle, Accra)
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleExploreMarketplace('Home Appliances')} className="hover:text-white transition cursor-pointer text-left">
+                    Home Appliances (Spintex Road)
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleExploreMarketplace('Laptops & Computing')} className="hover:text-white transition cursor-pointer text-left">
+                    Computing &amp; Laptops (Adum, Kumasi)
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleExploreMarketplace('Transport & Logistics')} className="hover:text-white transition cursor-pointer text-left">
+                    Cargo Tricycles (Abossey Okai)
+                  </button>
+                </li>
               </ul>
             </div>
 

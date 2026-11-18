@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { 
+  Home,
   ShoppingBag, 
   Store, 
   ShieldCheck, 
@@ -80,24 +81,28 @@ export default function Navbar({ activeTab, setActiveTab }) {
     switch (role) {
       case 'customer':
         return [
+          { id: 'home', label: 'Home', icon: Home },
           { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
           { id: 'customer', label: 'My Small-Small Hub', icon: CreditCard, badge: customerActiveContractsCount > 0 ? `${customerActiveContractsCount} Active` : null },
           { id: 'how-it-works', label: 'How It Works', icon: HelpCircle },
         ];
       case 'vendor':
         return [
+          { id: 'home', label: 'Home', icon: Home },
           { id: 'vendor', label: 'Vendor Central', icon: Store, badge: vendorPendingApplicationsCount > 0 ? `${vendorPendingApplicationsCount} Pending` : null },
           { id: 'marketplace', label: 'Browse Catalog', icon: ShoppingBag },
           { id: 'how-it-works', label: 'Merchant Guidelines', icon: HelpCircle },
         ];
       case 'admin':
         return [
+          { id: 'home', label: 'Home', icon: Home },
           { id: 'admin', label: 'Admin HQ', icon: ShieldCheck, badge: 'Platform Oversight' },
           { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
           { id: 'how-it-works', label: 'Regulations & Act', icon: HelpCircle },
         ];
       default:
         return [
+          { id: 'home', label: 'Home', icon: Home },
           { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
           { id: 'how-it-works', label: 'How It Works', icon: HelpCircle },
         ];
@@ -115,12 +120,12 @@ export default function Navbar({ activeTab, setActiveTab }) {
           <motion.div
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setActiveTab('marketplace')}
+            onClick={() => setActiveTab('home')}
             className="flex items-center gap-3 cursor-pointer group select-none"
             role="button"
             aria-label="FlexiPay Ghana Home"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') setActiveTab('marketplace'); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') setActiveTab('home'); }}
           >
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-red-700 via-red-600 to-red-500 flex items-center justify-center text-white shadow-md shadow-red-600/30 group-hover:shadow-lg group-hover:shadow-red-600/40 transition-all duration-300">
               <span className="text-xl font-black tracking-tight">FP</span>
