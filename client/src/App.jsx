@@ -1,79 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import RoleSwitcher from './components/RoleSwitcher';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import Marketplace from './pages/Marketplace';
 import ProductDetails from './pages/ProductDetails';
 import CustomerPortal from './pages/CustomerPortal';
-import VendorPortal from './pages/VendorPortal';
-import AdminPortal from './pages/AdminPortal';
 import HowItWorks from './pages/HowItWorks';
 import ApplicationModal from './components/ApplicationModal';
 import MoMoPaymentModal from './components/MoMoPaymentModal';
 import ContractReceiptModal from './components/ContractReceiptModal';
-import { ShieldCheck, Heart, Sparkles, AlertCircle, CheckCircle, Lock, ArrowRight } from 'lucide-react';
+import { getAppUrl } from './utils/apiBootstrap';
+import { Heart, AlertCircle, CheckCircle, Lock, ArrowRight, Store, ShieldCheck, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function UnauthorizedNotice({ requiredRole, onSwitch, onGoMarketplace }) {
+function SignInPrompt({ onSignIn, onGoMarketplace }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.25 }}
-      className="max-w-xl mx-auto my-12 bg-white rounded-3xl border border-red-100 p-8 shadow-md text-center"
+      className="max-w-lg mx-auto my-12 bg-white rounded-3xl border border-red-100 p-8 shadow-md text-center"
     >
       <div className="w-14 h-14 rounded-2xl bg-red-100 text-red-700 mx-auto flex items-center justify-center mb-4 shadow-2xs">
         <Lock className="w-7 h-7" />
       </div>
       <h3 className="text-xl font-black text-slate-900 mb-2">
-        {requiredRole} Access Restricted
+        Sign In to View Your HP Plans
       </h3>
       <p className="text-sm text-slate-600 mb-6 leading-relaxed">
-        This portal is reserved for registered <span className="font-semibold text-slate-900">{requiredRole}</span> accounts under Ghana Hire Purchase regulations. Switch your account or return to the marketplace to continue.
+        Access your active hire-purchase contracts, download legal agreements, and pay monthly installments via Mobile Money.
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
-          onClick={onSwitch}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition flex items-center justify-center gap-2 shadow-sm shadow-red-600/30"
+          onClick={onSignIn}
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition flex items-center justify-center gap-2 shadow-sm shadow-red-600/30 cursor-pointer"
         >
-          <span>Switch to {requiredRole} Account</span>
+          <span>Sign In as Kwesi Mensah</span>
           <ArrowRight className="w-4 h-4" />
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           onClick={onGoMarketplace}
-          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition"
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition cursor-pointer"
         >
-          Browse Marketplace
+          Continue Shopping
         </motion.button>
       </div>
     </motion.div>
   );
 }
 
-function MainAppContent() {
+function StorefrontContent() {
   const { role, toastMessage, switchRole } = useAuth();
 
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [marketplaceCategory, setMarketplaceCategory] = useState('All');
-
-  // Tab guard: sync activeTab whenever role changes
-  useEffect(() => {
-    if (role === 'customer' && (activeTab === 'vendor' || activeTab === 'admin')) {
-      setActiveTab('customer');
-    } else if (role === 'vendor' && (activeTab === 'customer' || activeTab === 'admin')) {
-      setActiveTab('vendor');
-    } else if (role === 'admin' && (activeTab === 'customer' || activeTab === 'vendor')) {
-      setActiveTab('admin');
-    } else if (role === 'guest' && (activeTab === 'customer' || activeTab === 'vendor' || activeTab === 'admin')) {
-      setActiveTab('marketplace');
-    }
-  }, [role]);
+  const [marketplaceSearch, setMarketplaceSearch] = useState('');
 
   const [applicationModalData, setApplicationModalData] = useState(null);
   const [paymentModalData, setPaymentModalData] = useState(null);
@@ -81,6 +67,14 @@ function MainAppContent() {
 
   const handleExploreMarketplace = (category = 'All') => {
     setMarketplaceCategory(category);
+    setMarketplaceSearch('');
+    setActiveTab('marketplace');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleHeaderSearch = (query) => {
+    setMarketplaceCategory('All');
+    setMarketplaceSearch(query);
     setActiveTab('marketplace');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -106,13 +100,15 @@ function MainAppContent() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50/50 font-sans selection:bg-red-600 selection:text-white">
       
-      {/* 1. Global Persona / Role Switcher Bar */}
-      <RoleSwitcher />
+      {/* Storefront E-Commerce Header */}
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onNavigateCategory={handleExploreMarketplace}
+        onHeaderSearch={handleHeaderSearch}
+      />
 
-      {/* 2. Global Navigation */}
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      {/* 3. Main View Router with Silk-Smooth Animated Transitions */}
+      {/* Main Storefront Views */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         <AnimatePresence mode="wait">
           <motion.div
@@ -127,14 +123,17 @@ function MainAppContent() {
                 onExploreMarketplace={handleExploreMarketplace}
                 onSelectProduct={handleSelectProduct}
                 onApplyHP={handleApplyHP}
-                onGoHowItWorks={() => { setActiveTab('how-it-works'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                onBecomeVendor={() => { switchRole('vendor', 'franko@frankotrading.com'); setActiveTab('vendor'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onGoHowItWorks={() => {
+                  setActiveTab('how-it-works');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
             )}
 
             {activeTab === 'marketplace' && (
               <Marketplace
                 initialCategory={marketplaceCategory}
+                initialSearch={marketplaceSearch}
                 onSelectProduct={handleSelectProduct}
                 onApplyHP={handleApplyHP}
               />
@@ -155,52 +154,21 @@ function MainAppContent() {
                   onViewReceipt={handleViewReceipt}
                 />
               ) : (
-                <UnauthorizedNotice
-                  requiredRole="Customer"
-                  onSwitch={() => switchRole('customer', 'kwesi@gmail.com')}
-                  onGoMarketplace={() => setActiveTab('marketplace')}
-                />
-              )
-            )}
-
-            {activeTab === 'vendor' && (
-              role === 'vendor' ? (
-                <VendorPortal
-                  onViewReceipt={handleViewReceipt}
-                />
-              ) : (
-                <UnauthorizedNotice
-                  requiredRole="Vendor"
-                  onSwitch={() => switchRole('vendor', 'franko@frankotrading.com')}
-                  onGoMarketplace={() => setActiveTab('marketplace')}
-                />
-              )
-            )}
-
-            {activeTab === 'admin' && (
-              role === 'admin' ? (
-                <AdminPortal
-                  onViewReceipt={handleViewReceipt}
-                />
-              ) : (
-                <UnauthorizedNotice
-                  requiredRole="Super Admin"
-                  onSwitch={() => switchRole('admin', 'admin@flexipaygh.com')}
-                  onGoMarketplace={() => setActiveTab('marketplace')}
+                <SignInPrompt
+                  onSignIn={() => switchRole('customer', 'kwesi@gmail.com')}
+                  onGoMarketplace={() => handleExploreMarketplace('All')}
                 />
               )
             )}
 
             {activeTab === 'how-it-works' && (
-              <HowItWorks
-                onGoMarketplace={() => setActiveTab('marketplace')}
-              />
+              <HowItWorks onGoMarketplace={() => handleExploreMarketplace('All')} />
             )}
           </motion.div>
         </AnimatePresence>
       </main>
 
-      {/* 4. Global Modals with Animated Backdrops */}
+      {/* Modals */}
       <AnimatePresence>
         {applicationModalData && (
           <ApplicationModal
@@ -208,7 +176,13 @@ function MainAppContent() {
             initialPlan={applicationModalData.initialPlan}
             onClose={() => setApplicationModalData(null)}
             onSuccess={(newContract) => {
-              setActiveTab('customer');
+              setApplicationModalData(null);
+              if (role === 'customer') {
+                setActiveTab('customer');
+              }
+              if (newContract) {
+                setReceiptModalContract(newContract);
+              }
             }}
           />
         )}
@@ -220,7 +194,11 @@ function MainAppContent() {
             contract={paymentModalData.contract}
             installment={paymentModalData.installment}
             onClose={() => setPaymentModalData(null)}
-            onSuccess={() => {}}
+            onSuccess={() => {
+              setPaymentModalData(null);
+              setActiveTab('customer');
+              window.location.reload();
+            }}
           />
         )}
       </AnimatePresence>
@@ -234,7 +212,7 @@ function MainAppContent() {
         )}
       </AnimatePresence>
 
-      {/* 5. Floating Toast Notification with Spring Physics */}
+      {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
@@ -242,7 +220,7 @@ function MainAppContent() {
             initial={{ opacity: 0, y: 25, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15, scale: 0.94 }}
-            transition={{ type: "spring", stiffness: 450, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
             className="fixed bottom-5 right-5 z-50 pointer-events-auto"
           >
             <div className={`p-4 rounded-2xl shadow-2xl border text-xs font-bold flex items-center gap-2.5 max-w-sm text-white ${
@@ -261,7 +239,7 @@ function MainAppContent() {
         )}
       </AnimatePresence>
 
-      {/* 6. Footer */}
+      {/* Modern E-Commerce Footer */}
       <footer className="mt-auto bg-red-950 text-white border-t border-red-900 pt-12 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -273,70 +251,55 @@ function MainAppContent() {
                 <span className="text-lg font-black tracking-tight">FlexiPay<span className="text-red-300">GH</span></span>
               </div>
               <p className="text-xs text-red-200/90 leading-relaxed">
-                Ghana's trusted multi-vendor hire purchase platform. Buy laptops, phones, home appliances, and mobility equipment with verified national ID and flexible Mobile Money repayments.
+                Ghana's trusted multi-vendor hire purchase storefront. Shop electronics, phones, home appliances, and mobility gear with verified national ID and Mobile Money installments.
               </p>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Explore Website</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Shop Storefront</h4>
               <ul className="space-y-2 text-xs text-red-200/80">
                 <li>
-                  <button 
-                    onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className="hover:text-white transition cursor-pointer text-left"
-                  >
-                    Home Overview
+                  <button onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition cursor-pointer">
+                    Storefront Home
                   </button>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => handleExploreMarketplace('All')}
-                    className="hover:text-white transition cursor-pointer text-left"
-                  >
-                    All Marketplace Goods
+                  <button onClick={() => handleExploreMarketplace('Phones & Tablets')} className="hover:text-white transition cursor-pointer">
+                    Phones &amp; Tablets
                   </button>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => { setActiveTab('how-it-works'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className="hover:text-white transition cursor-pointer text-left"
-                  >
+                  <button onClick={() => handleExploreMarketplace('Home Appliances')} className="hover:text-white transition cursor-pointer">
+                    Home Appliances
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => { setActiveTab('how-it-works'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-white transition cursor-pointer">
                     How Hire Purchase Works
-                  </button>
-                </li>
-                <li>
-                  <button 
-                    onClick={() => { switchRole('vendor', 'franko@frankotrading.com'); setActiveTab('vendor'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    className="hover:text-white transition cursor-pointer text-left"
-                  >
-                    For Retailers &amp; Merchants
                   </button>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Popular Categories</h4>
-              <ul className="space-y-2 text-xs text-red-200/80">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-red-300 mb-3">Dedicated Portals</h4>
+              <ul className="space-y-2.5 text-xs text-red-200/80">
                 <li>
-                  <button onClick={() => handleExploreMarketplace('Phones & Tablets')} className="hover:text-white transition cursor-pointer text-left">
-                    Phones &amp; Tablets (Circle, Accra)
-                  </button>
+                  <a href={getAppUrl('vendor/')} className="hover:text-white transition inline-flex items-center gap-1.5 font-semibold">
+                    <Store className="w-3.5 h-3.5 text-red-400" />
+                    <span>Vendor Seller Central</span>
+                    <ExternalLink className="w-3 h-3 opacity-70" />
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleExploreMarketplace('Home Appliances')} className="hover:text-white transition cursor-pointer text-left">
-                    Home Appliances (Spintex Road)
-                  </button>
+                  <a href={getAppUrl('admin/')} className="hover:text-white transition inline-flex items-center gap-1.5 font-semibold">
+                    <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
+                    <span>Admin Oversight HQ</span>
+                    <ExternalLink className="w-3 h-3 opacity-70" />
+                  </a>
                 </li>
-                <li>
-                  <button onClick={() => handleExploreMarketplace('Laptops & Computing')} className="hover:text-white transition cursor-pointer text-left">
-                    Computing &amp; Laptops (Adum, Kumasi)
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => handleExploreMarketplace('Transport & Logistics')} className="hover:text-white transition cursor-pointer text-left">
-                    Cargo Tricycles (Abossey Okai)
-                  </button>
+                <li className="pt-1 text-[11px] text-red-300/80">
+                  Hire Purchase Act of Ghana (1974)
                 </li>
               </ul>
             </div>
@@ -367,8 +330,8 @@ function MainAppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <MainAppContent />
+    <AuthProvider initialRole="customer">
+      <StorefrontContent />
     </AuthProvider>
   );
 }

@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState({
+const DEFAULT_USERS = {
+  customer: {
     id: "usr_customer_kwesi",
     role: "customer",
     name: "Kwesi Mensah",
@@ -18,7 +18,27 @@ export function AuthProvider({ children }) {
     guarantorPhone: "0209887766",
     creditScore: 780,
     hirePurchaseLimitGHS: 25000
-  });
+  },
+  vendor: {
+    id: "usr_vendor_franko",
+    role: "vendor",
+    name: "Franko Trading Ent",
+    email: "franko@frankotrading.com",
+    phone: "0244112233",
+    storeId: "ven_franko",
+    storeName: "Franko Trading Hub"
+  },
+  admin: {
+    id: "usr_admin",
+    role: "admin",
+    name: "FlexiPay Admin HQ",
+    email: "admin@flexipaygh.com",
+    phone: "0302998877"
+  }
+};
+
+export function AuthProvider({ children, initialRole = 'customer' }) {
+  const [user, setUser] = useState(DEFAULT_USERS[initialRole] ?? null);
 
   const [activeVendorStore, setActiveVendorStore] = useState(null);
   const [notifications, setNotifications] = useState([]);

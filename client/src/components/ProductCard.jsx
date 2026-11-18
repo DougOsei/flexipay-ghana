@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatGHS } from '../utils/ghanaConstants';
-import { Store, Star, ArrowRight, ShieldCheck, Zap, Calculator } from 'lucide-react';
+import { Store, Star, ArrowRight, ShieldCheck, Zap, Calculator, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ProductCard({ product, onSelectProduct, onApplyHP, index = 0 }) {
+  const [wishlisted, setWishlisted] = useState(false);
   const depositPercent = product.minDownPaymentPercent || 25;
   const maxTenure = Math.max(...(product.allowedTenures || [3]));
   const totalHP = Math.round(product.cashPrice * (1 + (product.markupPercent || 10) / 100));
@@ -35,10 +36,24 @@ export default function ProductCard({ product, onSelectProduct, onApplyHP, index
           </span>
           {product.featured && (
             <span className="bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-md shadow-red-600/30">
-              <Zap className="w-2.5 h-2.5 fill-current" /> Hot Pick
+              <Zap className="w-2.5 h-2.5 fill-current" aria-hidden="true" /> Hot Pick
             </span>
           )}
         </div>
+
+        {/* Interactive Wishlist Toggle */}
+        <motion.button
+          whileTap={{ scale: 0.85 }}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setWishlisted(!wishlisted);
+          }}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md shadow-sm border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-red-600 transition cursor-pointer"
+        >
+          <Heart className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-red-600 text-red-600' : ''}`} />
+        </motion.button>
 
         {/* Merchant location ribbon */}
         <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-slate-950/85 backdrop-blur-md text-white px-2.5 py-1.5 rounded-xl flex items-center justify-between text-xs z-10 border border-white/10">
@@ -111,9 +126,9 @@ export default function ProductCard({ product, onSelectProduct, onApplyHP, index
             whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => onSelectProduct(product)}
-            className="w-full py-2 px-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 text-xs font-bold transition flex items-center justify-center gap-1 text-center"
+            className="w-full py-2 px-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 text-xs font-bold transition flex items-center justify-center gap-1 text-center cursor-pointer"
           >
-            <Calculator className="w-3.5 h-3.5 text-slate-500" />
+            <Calculator className="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
             <span>Calculator</span>
           </motion.button>
 
@@ -122,10 +137,10 @@ export default function ProductCard({ product, onSelectProduct, onApplyHP, index
             whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => onApplyHP(product)}
-            className="w-full py-2 px-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-sm shadow-red-600/30"
+            className="w-full py-2 px-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-sm shadow-red-600/30 cursor-pointer"
           >
             <span>Buy on HP</span>
-            <ArrowRight className="w-3 h-3" />
+            <ArrowRight className="w-3 h-3" aria-hidden="true" />
           </motion.button>
         </div>
       </div>

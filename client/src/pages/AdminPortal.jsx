@@ -14,7 +14,7 @@ import {
   DollarSign
 } from 'lucide-react';
 
-export default function AdminPortal({ onViewReceipt }) {
+export default function AdminPortal({ onViewReceipt, activeSection = 'all' }) {
   const { showToast } = useAuth();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -149,6 +149,7 @@ export default function AdminPortal({ onViewReceipt }) {
       </section>
 
       {/* Vendor Store Directory Table */}
+      {(activeSection === 'all' || activeSection === 'vendors') && (
       <section className="bg-white rounded-3xl border border-red-100 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -213,8 +214,10 @@ export default function AdminPortal({ onViewReceipt }) {
           </table>
         </div>
       </section>
+      )}
 
       {/* Global Contract Registry */}
+      {(activeSection === 'all' || activeSection === 'contracts') && (
       <section className="bg-white rounded-3xl border border-red-100 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -272,6 +275,7 @@ export default function AdminPortal({ onViewReceipt }) {
           </table>
         </div>
       </section>
+      )}
 
     </div>
   );

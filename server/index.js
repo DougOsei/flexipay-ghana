@@ -45,8 +45,14 @@ app.get('*', (req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ success: false, error: 'API endpoint not found' });
   }
-  const indexHtml = path.join(clientDist, 'index.html');
-  res.sendFile(indexHtml, (err) => {
+  let targetHtml = 'index.html';
+  if (req.path === '/vendor' || req.path.startsWith('/vendor/')) {
+    targetHtml = path.join('vendor', 'index.html');
+  } else if (req.path === '/admin' || req.path.startsWith('/admin/')) {
+    targetHtml = path.join('admin', 'index.html');
+  }
+  const fullHtmlPath = path.join(clientDist, targetHtml);
+  res.sendFile(fullHtmlPath, (err) => {
     if (err) {
       res.status(200).send('FlexiPay Ghana API is running on port ' + PORT);
     }

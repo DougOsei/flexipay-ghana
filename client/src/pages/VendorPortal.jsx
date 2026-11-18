@@ -26,7 +26,7 @@ import {
   Building
 } from 'lucide-react';
 
-export default function VendorPortal({ onViewReceipt }) {
+export default function VendorPortal({ onViewReceipt, externalTab, onTabChange }) {
   const { user, showToast } = useAuth();
 
   // Active vendor store state
@@ -36,7 +36,12 @@ export default function VendorPortal({ onViewReceipt }) {
   const [loading, setLoading] = useState(true);
 
   // Active view tab inside Vendor Central
-  const [activeTab, setActiveTab] = useState('applications'); // 'applications' | 'installments' | 'products' | 'settings'
+  const [internalTab, setInternalTab] = useState('applications'); // 'applications' | 'installments' | 'products' | 'settings'
+  const activeTab = externalTab || internalTab;
+  const setActiveTab = (tab) => {
+    setInternalTab(tab);
+    if (onTabChange) onTabChange(tab);
+  };
 
   // Register New Vendor Store Modal state
   const [showRegisterStoreModal, setShowRegisterStoreModal] = useState(false);
@@ -411,16 +416,18 @@ export default function VendorPortal({ onViewReceipt }) {
       <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveTab('applications')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
             activeTab === 'applications'
-              ? 'bg-red-500 text-slate-950 shadow-sm'
+              ? 'bg-red-600 text-white shadow-sm shadow-red-600/30'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Users className="w-4 h-4" />
           <span>Hire-Purchase Applications</span>
           {stats?.pendingReviewCount > 0 && (
-            <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-black">
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+              activeTab === 'applications' ? 'bg-white text-red-700' : 'bg-red-600 text-white'
+            }`}>
               {stats?.pendingReviewCount}
             </span>
           )}
@@ -428,9 +435,9 @@ export default function VendorPortal({ onViewReceipt }) {
 
         <button
           onClick={() => setActiveTab('installments')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
             activeTab === 'installments'
-              ? 'bg-red-500 text-slate-950 shadow-sm'
+              ? 'bg-red-600 text-white shadow-sm shadow-red-600/30'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
@@ -440,9 +447,9 @@ export default function VendorPortal({ onViewReceipt }) {
 
         <button
           onClick={() => setActiveTab('products')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
             activeTab === 'products'
-              ? 'bg-red-500 text-slate-950 shadow-sm'
+              ? 'bg-red-600 text-white shadow-sm shadow-red-600/30'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
