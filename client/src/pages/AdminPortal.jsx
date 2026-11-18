@@ -88,7 +88,7 @@ export default function AdminPortal({ onViewReceipt }) {
     <div className="space-y-8 pb-20">
       
       {/* Platform Header */}
-      <section className="bg-gradient-to-r from-red-900 via-red-800 to-red-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-700/40">
+      <section className="bg-gradient-to-r from-red-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-800/40">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-red-100 border border-white/20 text-xs font-bold mb-2">

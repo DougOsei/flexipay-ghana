@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatGHS, formatDate } from '../utils/ghanaConstants';
 import { X, Printer, ShieldCheck, CheckCircle2, Clock, MapPin, Phone, UserCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function ContractReceiptModal({ contract, onClose }) {
   if (!contract) return null;
@@ -10,8 +11,20 @@ export default function ContractReceiptModal({ contract, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto bg-slate-950/70 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 relative my-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto bg-slate-950/75 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: "spring", stiffness: 450, damping: 32 }}
+        className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 relative my-6"
+      >
         
         {/* Modal Top Actions */}
         <div className="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between print:hidden">
@@ -190,7 +203,7 @@ export default function ContractReceiptModal({ contract, onClose }) {
           </div>
 
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -3,54 +3,82 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-white text-slate-800 selection:bg-red-500 selection:text-white;
+    @apply bg-slate-50/50 text-slate-800 selection:bg-red-600 selection:text-white font-sans antialiased;
   }
 }
 
-/* Custom Ghanaian fintech accents and badge styles */
-.gradient-ghana {
-  background: linear-gradient(135deg, #059669 0%, #047857 50%, #064E3B 100%);
+/* Custom Ghanaian fintech accents & red/white gradients */
+.gradient-red {
+  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 50%, #991B1B 100%);
 }
 
-.gradient-gold {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+.gradient-red-dark {
+  background: linear-gradient(135deg, #7F1D1D 0%, #450A0A 100%);
 }
 
-.gradient-hero {
-  background: radial-gradient(circle at 10% 20%, rgba(5, 150, 105, 0.12) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 80%),
-              linear-gradient(to bottom, #FFFFFF, #F8FAFC);
+.gradient-hero-red {
+  background: radial-gradient(circle at 15% 20%, rgba(220, 38, 38, 0.15) 0%, rgba(185, 28, 28, 0.06) 40%, transparent 75%),
+              radial-gradient(circle at 85% 80%, rgba(239, 68, 68, 0.08) 0%, transparent 60%),
+              linear-gradient(to bottom, #FFFFFF, #FFF5F5);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(254, 202, 202, 0.6);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(241, 245, 249, 1);
 }
 
 .glass-card-dark {
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f8fafc;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #dc2626;
 }

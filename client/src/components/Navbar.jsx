@@ -21,6 +21,7 @@ import {
   MapPin,
   ExternalLink
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const { 
@@ -65,7 +66,6 @@ export default function Navbar({ activeTab, setActiveTab }) {
     return name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
   };
 
-  // Role color helpers
   const roleColor = {
     customer: { bg: 'bg-red-600', ring: 'ring-red-300', badge: 'bg-red-100 text-red-900 border-red-200', dot: 'bg-red-500', activeBg: 'bg-red-50 text-red-800 border border-red-200/80 shadow-sm', icon: 'text-red-600' },
     vendor:   { bg: 'bg-red-700', ring: 'ring-red-300', badge: 'bg-red-100 text-red-900 border-red-200', dot: 'bg-red-600', activeBg: 'bg-red-50 text-red-900 border border-red-200/80 shadow-sm', icon: 'text-red-700' },
@@ -105,24 +105,26 @@ export default function Navbar({ activeTab, setActiveTab }) {
   const navItems = getNavItems();
 
   return (
-    <header className="sticky top-0 z-40 bg-white/97 backdrop-blur-md border-b border-red-100 shadow-sm transition">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-red-100/90 shadow-xs transition duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
 
-          {/* Brand Logo */}
-          <div
+          {/* Brand Logo with tactile hover */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setActiveTab('marketplace')}
             className="flex items-center gap-3 cursor-pointer group select-none"
           >
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-red-700 via-red-600 to-red-400 flex items-center justify-center text-white shadow-md shadow-red-700/30 group-hover:scale-105 transition">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-red-700 via-red-600 to-red-500 flex items-center justify-center text-white shadow-md shadow-red-700/25 group-hover:shadow-lg group-hover:shadow-red-600/35 transition-all duration-300">
               <span className="text-xl font-black tracking-tight">FP</span>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">
+                <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-red-700 transition-colors">
                   FlexiPay<span className="text-red-600">GH</span>
                 </span>
-                <span className="text-xs bg-red-100 text-red-900 border border-red-200 font-bold px-1.5 py-0.5 rounded-full">
+                <span className="text-[10px] bg-red-100 text-red-900 border border-red-200 font-bold px-2 py-0.5 rounded-full shadow-2xs">
                   🇬🇭 Ghana
                 </span>
               </div>
@@ -130,29 +132,38 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 Buy Now, Pay Small-Small • Multi-Vendor
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Desktop Nav - Role filtered */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          {/* Desktop Nav with Smooth sliding active layout indicator */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
-                <button
+                <motion.button
                   key={item.id}
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition relative group ${
-                    isActive ? rc.activeBg : 'text-slate-600 hover:text-slate-900 hover:bg-red-50/60'
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-200 ${
+                    isActive ? 'text-red-700' : 'text-slate-600 hover:text-slate-900 hover:bg-red-50/50'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? rc.icon : 'text-slate-400 group-hover:text-red-500'}`} />
-                  <span>{item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavIndicator"
+                      className="absolute inset-0 bg-red-50 border border-red-200/90 rounded-xl shadow-xs -z-0"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    />
+                  )}
+                  <Icon className={`w-4 h-4 relative z-10 transition-colors ${isActive ? 'text-red-600' : 'text-slate-400 group-hover:text-red-500'}`} />
+                  <span className="relative z-10">{item.label}</span>
                   {item.badge && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm bg-red-100 text-red-900 border-red-200">
+                    <span className="relative z-10 text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-2xs bg-red-100 text-red-900 border-red-200">
                       {item.badge}
                     </span>
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </nav>
@@ -160,68 +171,81 @@ export default function Navbar({ activeTab, setActiveTab }) {
           {/* Right Bar */}
           <div className="flex items-center gap-2 sm:gap-3">
 
-            {/* Bell — logged in only */}
+            {/* Notification Bell — logged in only */}
             {user && (
               <div className="relative" ref={notifRef}>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.94 }}
                   onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                  className="relative p-2 rounded-xl text-slate-600 hover:text-red-700 hover:bg-red-50 transition"
-                  title="Notifications"
+                  className="relative p-2.5 rounded-xl text-slate-600 hover:text-red-700 hover:bg-red-50/70 border border-transparent hover:border-red-100 transition"
+                  title="Notifications & MoMo Alerts"
                 >
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow ring-2 ring-white">
+                    <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-extrabold text-white shadow ring-2 ring-white animate-pulse">
                       {unreadCount}
                     </span>
                   )}
-                </button>
+                </motion.button>
 
-                {notifDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-red-100 p-4 z-50 animate-in fade-in slide-in-from-top-2">
-                    <div className="flex items-center justify-between pb-3 border-b border-red-50">
-                      <h4 className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-red-500" />
-                        Notifications &amp; MoMo Alerts
-                      </h4>
-                      <span className="text-xs bg-red-100 text-red-800 font-semibold px-2 py-0.5 rounded-full">
-                        {notifications.length} alerts
-                      </span>
-                    </div>
-                    <div className="max-h-72 overflow-y-auto divide-y divide-red-50 mt-2">
-                      {notifications.length === 0 ? (
-                        <p className="py-6 text-center text-xs text-slate-400">No new alerts.</p>
-                      ) : (
-                        notifications.map(n => (
-                          <div
-                            key={n.id}
-                            onClick={() => markNotificationRead(n.id)}
-                            className={`py-2.5 px-2 rounded-lg cursor-pointer transition ${!n.read ? 'bg-red-50/70 hover:bg-red-100/60' : 'opacity-70 hover:opacity-100 hover:bg-white'}`}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="font-semibold text-xs text-slate-900">{n.title}</span>
-                              {!n.read && <span className="w-2 h-2 rounded-full bg-red-500 mt-1 shrink-0"></span>}
-                            </div>
-                            <p className="text-xs text-slate-600 mt-1 leading-relaxed">{n.message}</p>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {notifDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-red-100 p-4 z-50 divide-y divide-red-50 origin-top-right"
+                    >
+                      <div className="flex items-center justify-between pb-3">
+                        <h4 className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-red-500" />
+                          Notifications &amp; MoMo Alerts
+                        </h4>
+                        <span className="text-xs bg-red-100 text-red-800 font-semibold px-2 py-0.5 rounded-full">
+                          {notifications.length} alerts
+                        </span>
+                      </div>
+                      <div className="max-h-72 overflow-y-auto divide-y divide-red-50 mt-2 pt-1">
+                        {notifications.length === 0 ? (
+                          <p className="py-6 text-center text-xs text-slate-400">No new alerts.</p>
+                        ) : (
+                          notifications.map(n => (
+                            <motion.div
+                              key={n.id}
+                              whileHover={{ x: 2 }}
+                              onClick={() => markNotificationRead(n.id)}
+                              className={`py-2.5 px-2 rounded-xl cursor-pointer transition ${!n.read ? 'bg-red-50/80 hover:bg-red-100/70' : 'opacity-70 hover:opacity-100 hover:bg-slate-50'}`}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <span className="font-semibold text-xs text-slate-900">{n.title}</span>
+                                {!n.read && <span className="w-2 h-2 rounded-full bg-red-600 mt-1 shrink-0"></span>}
+                              </div>
+                              <p className="text-xs text-slate-600 mt-1 leading-relaxed">{n.message}</p>
+                            </motion.div>
+                          ))
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
             {/* Profile OR Sign In */}
             {user ? (
               <div className="relative" ref={userRef}>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl hover:bg-red-50 border border-red-100 transition"
+                  className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl hover:bg-red-50/80 border border-red-100/80 transition shadow-2xs"
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white shadow-sm ${rc.bg}`}>
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white shadow-xs ${rc.bg}`}>
                     {getInitials(user.name)}
                   </div>
-                  <div className="hidden sm:block">
+                  <div className="hidden sm:block text-left">
                     <p className="text-xs font-bold text-slate-900 leading-tight max-w-[130px] truncate">{user.name}</p>
                     <p className="text-[11px] font-medium capitalize flex items-center gap-1 text-slate-500">
                       <span className={`w-1.5 h-1.5 rounded-full ${rc.dot}`}></span>
@@ -229,268 +253,296 @@ export default function Navbar({ activeTab, setActiveTab }) {
                     </p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
-                </button>
+                </motion.button>
 
-                {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-red-100 p-3.5 z-50 animate-in fade-in slide-in-from-top-2 divide-y divide-red-50">
+                <AnimatePresence>
+                  {userDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-red-100 p-3.5 z-50 divide-y divide-red-50 origin-top-right"
+                    >
+                      {/* Header */}
+                      <div className="pb-3">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white shrink-0 shadow-xs ${rc.bg}`}>
+                            {getInitials(user.name)}
+                          </div>
+                          <div className="overflow-hidden">
+                            <h4 className="font-bold text-sm text-slate-900 truncate">{user.name}</h4>
+                            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                            <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 border ${rc.badge}`}>
+                              <CheckCircle2 className="w-3 h-3 text-red-600" />
+                              {role === 'customer' && 'Ghana Card NIA Verified'}
+                              {role === 'vendor' && 'GRA Registered Merchant'}
+                              {role === 'admin' && 'Platform Super Administrator'}
+                            </span>
+                          </div>
+                        </div>
 
-                    {/* Header */}
-                    <div className="pb-3">
-                      <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black text-white shrink-0 ${rc.bg}`}>
-                          {getInitials(user.name)}
-                        </div>
-                        <div className="overflow-hidden">
-                          <h4 className="font-bold text-sm text-slate-900 truncate">{user.name}</h4>
-                          <p className="text-xs text-slate-500 truncate">{user.email}</p>
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 border ${rc.badge}`}>
-                            <CheckCircle2 className="w-3 h-3 text-red-600" />
-                            {role === 'customer' && 'Ghana Card NIA Verified'}
-                            {role === 'vendor' && 'GRA Registered Merchant'}
-                            {role === 'admin' && 'Platform Super Administrator'}
-                          </span>
-                        </div>
+                        {role === 'customer' && (
+                          <div className="mt-2.5 bg-red-50/70 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
+                            <div className="flex justify-between text-slate-600">
+                              <span>Ghana Card:</span>
+                              <span className="font-mono font-bold text-slate-800">{user.ghanaCard || 'GHA-721839201-4'}</span>
+                            </div>
+                            <div className="flex justify-between text-slate-600">
+                              <span>GPS Address:</span>
+                              <span className="font-mono text-slate-800">{user.digitalAddress || 'GA-183-9022'}</span>
+                            </div>
+                            <div className="flex justify-between text-slate-600">
+                              <span>HP Limit:</span>
+                              <span className="font-bold text-red-700">GH₵ {user.hirePurchaseLimitGHS?.toLocaleString() || '25,000'}</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {role === 'vendor' && (
+                          <div className="mt-2.5 bg-red-50/70 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
+                            <div className="flex justify-between text-slate-600">
+                              <span>Store:</span>
+                              <span className="font-bold text-red-900">{user.storeName || 'Franko Trading Hub'}</span>
+                            </div>
+                            <div className="flex justify-between text-slate-600">
+                              <span>MoMo Wallet:</span>
+                              <span className="font-mono font-bold text-slate-800">{user.phone || '0244000111'}</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {role === 'admin' && (
+                          <div className="mt-2.5 bg-red-50/70 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
+                            <div className="flex justify-between text-slate-600">
+                              <span>Access Level:</span>
+                              <span className="font-bold text-red-900">Tier 1 Full Oversight</span>
+                            </div>
+                            <div className="flex justify-between text-slate-600">
+                              <span>Escrow:</span>
+                              <span className="text-slate-800">Bank of Ghana Regulated</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {role === 'customer' && (
-                        <div className="mt-2.5 bg-red-50 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
-                          <div className="flex justify-between text-slate-600">
-                            <span>Ghana Card:</span>
-                            <span className="font-mono font-bold text-slate-800">{user.ghanaCard || 'GHA-721839201-4'}</span>
-                          </div>
-                          <div className="flex justify-between text-slate-600">
-                            <span>GPS Address:</span>
-                            <span className="font-mono text-slate-800">{user.digitalAddress || 'GA-183-9022'}</span>
-                          </div>
-                          <div className="flex justify-between text-slate-600">
-                            <span>HP Limit:</span>
-                            <span className="font-bold text-red-700">GH₵ {user.hirePurchaseLimitGHS?.toLocaleString() || '25,000'}</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {role === 'vendor' && (
-                        <div className="mt-2.5 bg-red-50 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
-                          <div className="flex justify-between text-slate-600">
-                            <span>Store:</span>
-                            <span className="font-bold text-red-900">{user.storeName || 'Franko Trading Hub'}</span>
-                          </div>
-                          <div className="flex justify-between text-slate-600">
-                            <span>MoMo Wallet:</span>
-                            <span className="font-mono font-bold text-slate-800">{user.phone || '0244000111'}</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {role === 'admin' && (
-                        <div className="mt-2.5 bg-red-50 p-2.5 rounded-xl border border-red-100 text-[11px] space-y-1">
-                          <div className="flex justify-between text-slate-600">
-                            <span>Access Level:</span>
-                            <span className="font-bold text-red-900">Tier 1 Full Oversight</span>
-                          </div>
-                          <div className="flex justify-between text-slate-600">
-                            <span>Escrow:</span>
-                            <span className="text-slate-800">Bank of Ghana Regulated</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Quick links */}
-                    <div className="py-2 space-y-1">
-                      {role === 'customer' && (
-                        <button onClick={() => { setActiveTab('customer'); setUserDropdownOpen(false); }}
-                          className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition">
-                          <span className="flex items-center gap-2"><CreditCard className="w-3.5 h-3.5 text-red-600" />My Small-Small Hub</span>
-                          <ArrowRight className="w-3 h-3 text-slate-400" />
-                        </button>
-                      )}
-                      {role === 'vendor' && (
-                        <button onClick={() => { setActiveTab('vendor'); setUserDropdownOpen(false); }}
-                          className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition">
-                          <span className="flex items-center gap-2"><Store className="w-3.5 h-3.5 text-red-600" />Vendor Central Dashboard</span>
-                          <ArrowRight className="w-3 h-3 text-slate-400" />
-                        </button>
-                      )}
-                      {role === 'admin' && (
-                        <button onClick={() => { setActiveTab('admin'); setUserDropdownOpen(false); }}
-                          className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-lg transition">
-                          <span className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-red-700" />Admin HQ</span>
-                          <ArrowRight className="w-3 h-3 text-slate-400" />
-                        </button>
-                      )}
-                      <button onClick={() => { setActiveTab('marketplace'); setUserDropdownOpen(false); }}
-                        className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-slate-900 rounded-lg transition">
-                        <span className="flex items-center gap-2"><ShoppingBag className="w-3.5 h-3.5 text-slate-500" />Browse Marketplace</span>
-                        <ArrowRight className="w-3 h-3 text-slate-400" />
-                      </button>
-                    </div>
-
-                    {/* Persona switcher */}
-                    <div className="py-2">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-2">Switch Persona:</p>
-                      <div className="grid grid-cols-3 gap-1">
-                        {[
-                          { label: 'Buyer', r: 'customer', email: 'kwesi@gmail.com' },
-                          { label: 'Vendor', r: 'vendor', email: 'franko@frankotrading.com' },
-                          { label: 'Admin', r: 'admin', email: 'admin@flexipaygh.com' },
-                        ].map(p => (
-                          <button key={p.r}
-                            onClick={() => { switchRole(p.r, p.email); setUserDropdownOpen(false); }}
-                            className={`px-2 py-1 rounded text-[11px] font-medium text-center transition ${role === p.r ? 'bg-red-600 text-white font-bold' : 'bg-red-50 text-red-800 hover:bg-red-100'}`}>
-                            {p.label}
+                      {/* Quick links */}
+                      <div className="py-2 space-y-1">
+                        {role === 'customer' && (
+                          <button onClick={() => { setActiveTab('customer'); setUserDropdownOpen(false); }}
+                            className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition">
+                            <span className="flex items-center gap-2"><CreditCard className="w-3.5 h-3.5 text-red-600" />My Small-Small Hub</span>
+                            <ArrowRight className="w-3 h-3 text-slate-400" />
                           </button>
-                        ))}
+                        )}
+                        {role === 'vendor' && (
+                          <button onClick={() => { setActiveTab('vendor'); setUserDropdownOpen(false); }}
+                            className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition">
+                            <span className="flex items-center gap-2"><Store className="w-3.5 h-3.5 text-red-600" />Vendor Central Dashboard</span>
+                            <ArrowRight className="w-3 h-3 text-slate-400" />
+                          </button>
+                        )}
+                        {role === 'admin' && (
+                          <button onClick={() => { setActiveTab('admin'); setUserDropdownOpen(false); }}
+                            className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-700 rounded-xl transition">
+                            <span className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-red-700" />Admin HQ</span>
+                            <ArrowRight className="w-3 h-3 text-slate-400" />
+                          </button>
+                        )}
+                        <button onClick={() => { setActiveTab('marketplace'); setUserDropdownOpen(false); }}
+                          className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-slate-900 rounded-xl transition">
+                          <span className="flex items-center gap-2"><ShoppingBag className="w-3.5 h-3.5 text-slate-500" />Browse Marketplace</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400" />
+                        </button>
                       </div>
-                    </div>
 
-                    {/* Sign Out */}
-                    <div className="pt-2">
-                      <button
-                        onClick={() => { logout(); setUserDropdownOpen(false); setActiveTab('marketplace'); }}
-                        className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition"
-                      >
-                        <LogOut className="w-3.5 h-3.5" />
-                        Sign Out (Browse as Guest)
-                      </button>
-                    </div>
-                  </div>
-                )}
+                      {/* Persona switcher in profile */}
+                      <div className="py-2">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-2">Switch Persona:</p>
+                        <div className="grid grid-cols-3 gap-1">
+                          {[
+                            { label: 'Buyer', r: 'customer', email: 'kwesi@gmail.com' },
+                            { label: 'Vendor', r: 'vendor', email: 'franko@frankotrading.com' },
+                            { label: 'Admin', r: 'admin', email: 'admin@flexipaygh.com' },
+                          ].map(p => (
+                            <button key={p.r}
+                              onClick={() => { switchRole(p.r, p.email); setUserDropdownOpen(false); }}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-medium text-center transition ${role === p.r ? 'bg-red-600 text-white font-bold' : 'bg-red-50 text-red-800 hover:bg-red-100'}`}>
+                              {p.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Sign Out */}
+                      <div className="pt-2">
+                        <button
+                          onClick={() => { logout(); setUserDropdownOpen(false); setActiveTab('marketplace'); }}
+                          className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition"
+                        >
+                          <LogOut className="w-3.5 h-3.5" />
+                          Sign Out (Browse as Guest)
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
-              /* Guest */
+              /* Guest Sign In */
               <div className="flex items-center gap-2" ref={signInRef}>
                 <div className="relative">
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={() => setSignInDropdownOpen(!signInDropdownOpen)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-red-600 text-white hover:bg-red-700 shadow-sm transition"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-red-600 text-white hover:bg-red-700 shadow-sm shadow-red-600/30 transition"
                   >
                     <User className="w-4 h-4" />
                     <span>Sign In</span>
                     <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
+                  </motion.button>
 
-                  {signInDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-red-100 p-3 z-50 animate-in fade-in slide-in-from-top-2">
-                      <div className="pb-2 border-b border-red-50">
-                        <p className="text-xs font-bold text-slate-900">Select Demo Persona to Sign In</p>
-                        <p className="text-[11px] text-slate-500">Test the platform as buyer, merchant or admin</p>
-                      </div>
-                      <div className="mt-2 space-y-1">
-                        {[
-                          { initials: 'KM', name: 'Kwesi Mensah', sub: 'Customer • Verified Buyer', r: 'customer', email: 'kwesi@gmail.com', tab: 'customer' },
-                          { initials: 'FT', name: 'Franko Trading Hub', sub: 'Vendor • Circle Accra', r: 'vendor', email: 'franko@frankotrading.com', tab: 'vendor' },
-                          { initials: 'AD', name: 'Super Administrator', sub: 'Admin Oversight', r: 'admin', email: 'admin@flexipaygh.com', tab: 'admin' },
-                        ].map(p => (
-                          <button key={p.r}
-                            onClick={() => { switchRole(p.r, p.email); setSignInDropdownOpen(false); setActiveTab(p.tab); }}
-                            className="w-full text-left p-2 rounded-xl hover:bg-red-50 transition flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs">{p.initials}</div>
-                            <div>
-                              <p className="text-xs font-bold text-slate-900">{p.name}</p>
-                              <p className="text-[11px] text-slate-500">{p.sub}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {signInDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-red-100 p-3 z-50 origin-top-right"
+                      >
+                        <div className="pb-2 border-b border-red-50">
+                          <p className="text-xs font-bold text-slate-900">Select Demo Persona</p>
+                          <p className="text-[11px] text-slate-500">Test as buyer, merchant or admin</p>
+                        </div>
+                        <div className="mt-2 space-y-1">
+                          {[
+                            { initials: 'KM', name: 'Kwesi Mensah', sub: 'Customer • Verified Buyer', r: 'customer', email: 'kwesi@gmail.com', tab: 'customer' },
+                            { initials: 'FT', name: 'Franko Trading Hub', sub: 'Vendor • Circle Accra', r: 'vendor', email: 'franko@frankotrading.com', tab: 'vendor' },
+                            { initials: 'AD', name: 'Super Administrator', sub: 'Admin Oversight', r: 'admin', email: 'admin@flexipaygh.com', tab: 'admin' },
+                          ].map(p => (
+                            <button key={p.r}
+                              onClick={() => { switchRole(p.r, p.email); setSignInDropdownOpen(false); setActiveTab(p.tab); }}
+                              className="w-full text-left p-2 rounded-xl hover:bg-red-50 transition flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs">{p.initials}</div>
+                              <div>
+                                <p className="text-xs font-bold text-slate-900">{p.name}</p>
+                                <p className="text-[11px] text-slate-500">{p.sub}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => { switchRole('vendor', 'franko@frankotrading.com'); setActiveTab('vendor'); }}
-                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-red-800 bg-red-50 hover:bg-red-100 border border-red-200 transition"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-red-800 bg-red-50 hover:bg-red-100/80 border border-red-200 transition"
                 >
                   <Store className="w-3.5 h-3.5 text-red-600" />
                   <span>Open Store</span>
-                </button>
+                </motion.button>
               </div>
             )}
 
-            {/* Mobile toggle */}
-            <button
+            {/* Mobile menu hamburger */}
+            <motion.button
+              whileTap={{ scale: 0.92 }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 rounded-xl text-slate-600 hover:text-red-700 hover:bg-red-50 transition"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            </motion.button>
           </div>
         </div>
 
-        {/* Mobile drawer */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-red-100 py-3 space-y-2 animate-in fade-in">
-            {user ? (
-              <div className="p-3 bg-red-50 rounded-xl border border-red-100 mb-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white ${rc.bg}`}>
-                    {getInitials(user.name)}
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">{user.name}</p>
-                    <p className="text-[10px] text-slate-500 capitalize">{role} Account</p>
-                  </div>
-                </div>
-                <button onClick={() => { logout(); setMobileMenuOpen(false); setActiveTab('marketplace'); }}
-                  className="text-[11px] font-bold text-red-600 hover:underline flex items-center gap-1">
-                  <LogOut className="w-3 h-3" />Sign Out
-                </button>
-              </div>
-            ) : (
-              <div className="p-3 bg-red-50 rounded-xl border border-red-100 mb-2 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-red-900">Browsing as Guest</p>
-                  <p className="text-[10px] text-red-700">Sign in to buy on installment</p>
-                </div>
-                <button onClick={() => { switchRole('customer', 'kwesi@gmail.com'); setMobileMenuOpen(false); setActiveTab('customer'); }}
-                  className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold shadow-sm">
-                  Sign In
-                </button>
-              </div>
-            )}
-
-            <div className="space-y-1">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button key={item.id}
-                    onClick={() => { setActiveTab(item.id); setMobileMenuOpen(false); }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition ${
-                      isActive ? 'bg-red-600 text-white font-bold' : 'text-slate-700 hover:bg-red-50 hover:text-red-800'
-                    }`}>
-                    <div className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4" />
-                      <span>{item.label}</span>
+        {/* Mobile drawer with AnimatePresence */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden overflow-hidden border-t border-red-100 py-3 space-y-2"
+            >
+              {user ? (
+                <div className="p-3 bg-red-50 rounded-xl border border-red-100 mb-2 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white ${rc.bg}`}>
+                      {getInitials(user.name)}
                     </div>
-                    {item.badge && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
-                        {item.badge}
-                      </span>
-                    )}
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">{user.name}</p>
+                      <p className="text-[10px] text-slate-500 capitalize">{role} Account</p>
+                    </div>
+                  </div>
+                  <button onClick={() => { logout(); setMobileMenuOpen(false); setActiveTab('marketplace'); }}
+                    className="text-[11px] font-bold text-red-600 hover:underline flex items-center gap-1">
+                    <LogOut className="w-3 h-3" />Sign Out
                   </button>
-                );
-              })}
-            </div>
+                </div>
+              ) : (
+                <div className="p-3 bg-red-50 rounded-xl border border-red-100 mb-2 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-red-900">Browsing as Guest</p>
+                    <p className="text-[10px] text-red-700">Sign in to buy on installment</p>
+                  </div>
+                  <button onClick={() => { switchRole('customer', 'kwesi@gmail.com'); setMobileMenuOpen(false); setActiveTab('customer'); }}
+                    className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold shadow-sm">
+                    Sign In
+                  </button>
+                </div>
+              )}
 
-            <div className="pt-2 border-t border-red-100">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1">Switch Role:</p>
-              <div className="grid grid-cols-3 gap-1.5">
-                {[
-                  { label: 'Buyer', r: 'customer', email: 'kwesi@gmail.com' },
-                  { label: 'Vendor', r: 'vendor', email: 'franko@frankotrading.com' },
-                  { label: 'Admin', r: 'admin', email: 'admin@flexipaygh.com' },
-                ].map(p => (
-                  <button key={p.r}
-                    onClick={() => { switchRole(p.r, p.email); setMobileMenuOpen(false); }}
-                    className={`py-1.5 px-2 rounded-lg text-xs font-semibold text-center ${role === p.r ? 'bg-red-600 text-white' : 'bg-red-50 text-red-800'}`}>
-                    {p.label}
-                  </button>
-                ))}
+              <div className="space-y-1">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button key={item.id}
+                      onClick={() => { setActiveTab(item.id); setMobileMenuOpen(false); }}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                        isActive ? 'bg-red-600 text-white font-bold shadow-sm' : 'text-slate-700 hover:bg-red-50 hover:text-red-800'
+                      }`}>
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4" />
+                        <span>{item.label}</span>
+                      </div>
+                      {item.badge && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-            </div>
-          </div>
-        )}
+
+              <div className="pt-2 border-t border-red-100">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-1">Switch Role:</p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: 'Buyer', r: 'customer', email: 'kwesi@gmail.com' },
+                    { label: 'Vendor', r: 'vendor', email: 'franko@frankotrading.com' },
+                    { label: 'Admin', r: 'admin', email: 'admin@flexipaygh.com' },
+                  ].map(p => (
+                    <button key={p.r}
+                      onClick={() => { switchRole(p.r, p.email); setMobileMenuOpen(false); }}
+                      className={`py-1.5 px-2 rounded-lg text-xs font-semibold text-center ${role === p.r ? 'bg-red-600 text-white font-bold' : 'bg-red-50 text-red-800'}`}>
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

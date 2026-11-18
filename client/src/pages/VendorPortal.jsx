@@ -311,7 +311,7 @@ export default function VendorPortal({ onViewReceipt }) {
     <div className="space-y-8 pb-20">
       
       {/* Vendor Top Header & Store Switcher */}
-      <section className="bg-gradient-to-r from-slate-900 via-amber-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-600/30">
+      <section className="bg-gradient-to-r from-red-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-800/40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-2xl bg-red-500 text-slate-950 flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
