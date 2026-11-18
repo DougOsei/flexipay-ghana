@@ -90,8 +90,9 @@ export default function ProductDetails({ productId, onBack, onApplyHP }) {
               <span className="bg-slate-950/85 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                 {product.category}
               </span>
-              <span className="bg-red-600 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-md shadow-red-600/30">
-                🇬🇭 Hire Purchase Ready
+              <span className="inline-flex items-center gap-1.5 bg-red-600 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-md shadow-red-600/30">
+                <ShieldCheck className="w-3.5 h-3.5 text-white" aria-hidden="true" />
+                <span>Hire Purchase Ready</span>
               </span>
             </div>
           </div>
@@ -130,8 +131,8 @@ export default function ProductDetails({ productId, onBack, onApplyHP }) {
           {/* Vendor Store Card */}
           <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-13 h-13 rounded-2xl bg-red-100 text-red-700 flex items-center justify-center font-bold text-2xl shadow-2xs">
-                🏪
+              <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-700 flex items-center justify-center shadow-2xs">
+                <Store className="w-6 h-6 text-red-700" aria-hidden="true" />
               </div>
               <div>
                 <div className="flex items-center gap-2">

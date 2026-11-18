@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatGHS, formatDate } from '../utils/ghanaConstants';
-import { X, Printer, ShieldCheck, CheckCircle2, Clock, MapPin, Phone, UserCheck } from 'lucide-react';
+import { X, Printer, ShieldCheck, CheckCircle2, Clock, MapPin, Phone, UserCheck, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function ContractReceiptModal({ contract, onClose }) {
@@ -28,21 +28,25 @@ export default function ContractReceiptModal({ contract, onClose }) {
         
         {/* Modal Top Actions */}
         <div className="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between print:hidden">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">📜</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-red-600/30 border border-red-500/40 flex items-center justify-center">
+              <FileText className="w-4 h-4 text-red-400" aria-hidden="true" />
+            </div>
             <span className="font-bold text-sm sm:text-base">Official Hire-Purchase Agreement & Schedule</span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition"
+              aria-label="Print agreement document"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition cursor-pointer"
             >
-              <Printer className="w-3.5 h-3.5" />
+              <Printer className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Print Agreement</span>
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white"
+              aria-label="Close agreement modal"
+              className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -57,8 +61,9 @@ export default function ContractReceiptModal({ contract, onClose }) {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-extrabold text-slate-900">FlexiPay<span className="text-red-600">GH</span></span>
-                <span className="text-xs bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full">
-                  🇬🇭 Verified Contract
+                <span className="inline-flex items-center gap-1 text-xs bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded-full">
+                  <ShieldCheck className="w-3.5 h-3.5 text-red-700" aria-hidden="true" />
+                  Verified Contract
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-1">Hire-Purchase Act of Ghana (Act 1974) Statutory Agreement</p>

@@ -180,7 +180,7 @@ export default function ApplicationModal({ product, initialPlan, onClose, onSucc
         <div className="bg-slate-900 text-white p-5 sm:p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-red-600/30 border border-red-500/40 text-red-400 flex items-center justify-center font-bold">
-              🇬🇭
+              <ShieldCheck className="w-5 h-5 text-red-400" aria-hidden="true" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold">
@@ -193,7 +193,8 @@ export default function ApplicationModal({ product, initialPlan, onClose, onSucc
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition"
+            aria-label="Close application modal"
+            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>

@@ -979,8 +979,8 @@
       "tenureMonths": 6,
       "frequency": "monthly",
       "installmentAmount": 2156,
-      "status": "PENDING_APPROVAL",
-      "deliveryStatus": "PENDING_DISPATCH",
+      "status": "ACTIVE",
+      "deliveryStatus": "DELIVERED",
       "totalPaid": 5544,
       "outstandingBalance": 12936,
       "installments": [
@@ -1028,7 +1028,8 @@
         }
       ],
       "createdAt": "2025-03-01T15:20:00Z",
-      "approvedAt": null
+      "approvedAt": "2026-11-18T13:16:24.274Z",
+      "deliveredAt": "2026-11-18T13:16:28.346Z"
     }
   ],
   "payments": [
@@ -1126,6 +1127,15 @@
     }
   ],
   "notifications": [
+    {
+      "id": "notif_1795007784278_muss",
+      "read": false,
+      "createdAt": "2026-11-18T13:16:24.278Z",
+      "recipientId": "usr_customer_kwesi",
+      "title": "Application Approved! 🇬🇭📦",
+      "message": "Your hire-purchase agreement for Apple iPhone 15 Pro Max 256GB - Natural Titanium was APPROVED by Franko Trading Hub! Item is now in transit for delivery.",
+      "type": "APPLICATION_APPROVED"
+    },
     {
       "id": "notif_1791195051482_k6db",
       "read": false,

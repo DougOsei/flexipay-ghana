@@ -93,8 +93,8 @@ export default function MoMoPaymentModal({ contract, installment, onClose, onSuc
         {/* Top Header */}
         <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-red-500/20 border border-red-300/30 text-red-300 flex items-center justify-center font-bold">
-              📱
+            <div className="w-9 h-9 rounded-xl bg-red-500/20 border border-red-300/30 text-red-300 flex items-center justify-center">
+              <Smartphone className="w-5 h-5 text-red-300" aria-hidden="true" />
             </div>
             <div>
               <h3 className="font-bold text-base">Make Installment Payment</h3>
@@ -103,7 +103,8 @@ export default function MoMoPaymentModal({ contract, installment, onClose, onSuc
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white"
+            aria-label="Close payment modal"
+            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>

@@ -131,7 +131,7 @@ export default function VendorPortal({ onViewReceipt }) {
       });
       const data = await res.json();
       if (data.success) {
-        showToast(`🎉 Store "${data.vendor.name}" registered successfully!`, 'success');
+        showToast(`Store "${data.vendor.name}" registered successfully!`, 'success');
         setShowRegisterStoreModal(false);
         setVendorsList(prev => [...prev, data.vendor]);
         setSelectedVendorId(data.vendor.id);
@@ -314,8 +314,8 @@ export default function VendorPortal({ onViewReceipt }) {
       <section className="bg-gradient-to-r from-red-950 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-red-800/40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-red-500 text-slate-950 flex items-center justify-center font-black text-2xl shadow-lg shrink-0">
-              🏪
+            <div className="w-16 h-16 rounded-2xl bg-red-600 text-white flex items-center justify-center shadow-lg shrink-0">
+              <Store className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -684,15 +684,20 @@ export default function VendorPortal({ onViewReceipt }) {
           <div className="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 p-6 space-y-5 my-8">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center font-bold">
-                  🇬🇭
+                <div className="w-9 h-9 rounded-xl bg-red-100 text-red-700 flex items-center justify-center">
+                  <Store className="w-4 h-4 text-red-700" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-black text-base text-slate-900">Open a New Vendor Store</h3>
                   <p className="text-xs text-slate-500">Sell products on installment and collect repayments via MoMo</p>
                 </div>
               </div>
-              <button onClick={() => setShowRegisterStoreModal(false)} className="text-slate-400 hover:text-slate-600">
+              <button
+                type="button"
+                onClick={() => setShowRegisterStoreModal(false)}
+                aria-label="Close store registration modal"
+                className="text-slate-400 hover:text-slate-600 transition cursor-pointer"
+              >
                 <XCircle className="w-5 h-5" />
               </button>
             </div>

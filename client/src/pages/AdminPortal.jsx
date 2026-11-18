@@ -175,8 +175,8 @@ export default function AdminPortal({ onViewReceipt }) {
                 <tr key={v.id} className="hover:bg-red-50/40">
                   <td className="py-3 px-3 font-bold text-slate-900">
                     <div className="flex items-center gap-2">
-                      <span className="w-7 h-7 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs">
-                        🏪
+                      <span className="w-7 h-7 rounded-lg bg-red-100 text-red-700 flex items-center justify-center">
+                        <Store className="w-3.5 h-3.5 text-red-700" aria-hidden="true" />
                       </span>
                       <div>
                         <div>{v.name}</div>

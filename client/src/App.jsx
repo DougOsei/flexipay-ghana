@@ -231,7 +231,11 @@ function MainAppContent() {
               toastMessage.type === 'warning' ? 'bg-orange-600 border-orange-500' :
               'bg-slate-900 border-slate-700'
             }`}>
-              <span className="text-base">🇬🇭</span>
+              {toastMessage.type === 'error' ? (
+                <AlertCircle className="w-5 h-5 text-white shrink-0" aria-hidden="true" />
+              ) : (
+                <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" aria-hidden="true" />
+              )}
               <span className="leading-snug">{toastMessage.message}</span>
             </div>
           </motion.div>

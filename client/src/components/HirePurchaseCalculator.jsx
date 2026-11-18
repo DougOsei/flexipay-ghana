@@ -81,8 +81,9 @@ export default function HirePurchaseCalculator({
             <p className="text-xs text-slate-500">Live calculation under Ghana HP regulations</p>
           </div>
         </div>
-        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-800 border border-red-200 shadow-2xs">
-          🇬🇭 BNPL Plan
+        <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-800 border border-red-200 shadow-2xs">
+          <ShieldCheck className="w-3.5 h-3.5 text-red-600" aria-hidden="true" />
+          <span>BNPL Plan</span>
         </span>
       </div>
 

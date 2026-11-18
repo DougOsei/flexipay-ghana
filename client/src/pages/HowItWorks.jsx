@@ -79,9 +79,10 @@ export default function HowItWorks({ onGoMarketplace }) {
         <motion.span 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-xs bg-red-100 text-red-900 border border-red-200 font-bold px-3.5 py-1 rounded-full uppercase tracking-wider inline-block shadow-2xs"
+          className="inline-flex items-center gap-1.5 text-xs bg-red-100 text-red-900 border border-red-200 font-bold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-2xs"
         >
-          🇬🇭 Simple &amp; Transparent Financing
+          <ShieldCheck className="w-3.5 h-3.5 text-red-700" aria-hidden="true" />
+          <span>Simple &amp; Transparent Financing</span>
         </motion.span>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
           How Hire Purchase Works on <span className="text-red-600">FlexiPay Ghana</span>

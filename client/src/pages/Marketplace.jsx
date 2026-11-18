@@ -86,7 +86,8 @@ export default function Marketplace({ onSelectProduct, onApplyHP }) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-400"></span>
             </span>
-            🇬🇭 Ghana's Trusted Multi-Vendor Hire Purchase Hub
+            <ShieldCheck className="w-3.5 h-3.5 text-red-300" aria-hidden="true" />
+            <span>Ghana's Trusted Multi-Vendor Hire Purchase Hub</span>
           </motion.div>
 
           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
@@ -218,8 +219,8 @@ export default function Marketplace({ onSelectProduct, onApplyHP }) {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-3xl border border-slate-200 p-12 text-center max-w-md mx-auto space-y-4 shadow-sm"
           >
-            <div className="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto text-3xl shadow-inner">
-              🔍
+            <div className="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto shadow-inner">
+              <Search className="w-8 h-8 text-red-500" aria-hidden="true" />
             </div>
             <h3 className="font-extrabold text-slate-900 text-lg">No Products Found</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
@@ -229,7 +230,7 @@ export default function Marketplace({ onSelectProduct, onApplyHP }) {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-              className="py-2.5 px-5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm shadow-red-600/30 transition"
+              className="py-2.5 px-5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm shadow-red-600/30 transition cursor-pointer"
             >
               Reset All Filters
             </motion.button>
